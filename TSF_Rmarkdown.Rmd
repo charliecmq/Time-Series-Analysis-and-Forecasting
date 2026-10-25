@@ -1,0 +1,126 @@
+---
+title: "Time Series Analysis and Forecasting of Coffee Prices"
+author: Chin Mun Qin (TP089533)
+output:
+  word_document: default
+  html_document: default
+date: "2026-05-17"
+---
+
+```{r setup, echo=TRUE, warning=FALSE, message=FALSE}
+##parta
+#download the data
+library(quantmod)
+symbol <- "KC=F"
+start_date <- "2025-01-01"
+end_date <- "2026-01-01"
+getSymbols(symbol, src="yahoo", from=start_date, to=end_date)
+head(`KC=F`)
+tail(`KC=F`)
+
+#extract closing price & clean NAs with linear interpolation
+coffee_close <- `KC=F`[, "KC=F.Close"]
+coffee_clean <- na.approx(coffee_close)
+
+#plot the data
+plot(coffee_clean, main="Daily Closing Price of Coffee Futures (KC=F)", ylab="Price (US Cents/lb)", xlab="Date", col="darkblue", lwd=2)
+
+#ts decomposition
+coffee_ts <- ts(as.numeric(coffee_clean), frequency=21)
+coffee_decomp <- decompose(coffee_ts, type="additive")
+plot(coffee_decomp)
+
+#statistical verification
+library(Kendall)
+MannKendall(as.numeric(coffee_clean))
+months <- format(index(coffee_clean), "%m")
+kruskal.test(as.numeric(coffee_clean) ~ months)
+
+##partc
+#split the data
+train_coffee <- coffee_clean[1:(0.8*length(coffee_clean))]
+train_coffee
+test_coffee <- coffee_clean[-c(1:(0.8*length(coffee_clean)))]
+test_coffee
+
+#add. holt-winters
+train_coffee <- ts(as.numeric(train_coffee), frequency = 21)
+h_days <- length(test_coffee)
+library(forecast)
+hw_forecast <- hw(train_coffee, seasonal="additive", h=h_days)
+plot(hw_forecast, main="Forecast Using HoltWinters (Coffee Prices)", ylab="Daily Price (US Cents/lb)", xlab="Time", lwd=2)
+lines(hw_forecast$fitted, col="red", lwd=2)
+legend("topleft", legend = c("Historical data", "Train data (Fitted)", "Test data (Forecast)"), col = c("black", "red", "blue"), lty=1, lwd=2, cex=0.6)
+
+#add. decomp
+decomp_forecast <- stlf(train_coffee, h=h_days)
+plot(decomp_forecast, main="Forecast Using Decomposition Model (Coffee Prices)", ylab="Daily Price (US Cents/lb)", xlab="Time", lwd=2)
+lines(decomp_forecast$fitted, col="red", lwd=2)
+legend("topleft", legend = c("Historical data", "Train data (Fitted)", "Test data (Forecast)"), col = c("black", "red", "blue"), lty=1, lwd=2, cex=0.6)
+
+#reg
+reg_model <- tslm(train_coffee ~ trend + season)
+reg_forecast <- forecast(reg_model, h=h_days)
+plot(reg_forecast, main="Forecast Using Regression Model (Coffee Prices)", ylab="Daily Price (US Cents/lb)", xlab="Time", lwd=2)
+lines(reg_forecast$fitted, col="red", lwd=2)
+legend("bottomleft", legend = c("Historical data", "Train data (Fitted)", "Test data (Forecast)"), col = c("black", "red", "blue"), lty=1, lwd=2, cex=0.6)
+
+##partd
+accuracy(hw_forecast, test_coffee)
+accuracy(decomp_forecast, test_coffee)
+accuracy(reg_forecast, test_coffee)
+
+##parte
+tsdisplay(coffee_ts, lag.max=50, main="Time Series of Coffee Futures")
+
+#required library
+library(tseries)
+library(forecast)
+
+#test for stationary
+adf.test(coffee_ts)
+kpss.test(coffee_ts)
+
+#differencing
+ndiffs(coffee_ts)
+
+#test for stationary after applied 1st diff
+adf.test(diff(coffee_ts))
+kpss.test(diff(coffee_ts))
+
+#test for seasonality
+library(seastests)
+isSeasonal(coffee_ts)
+nsdiffs(coffee_ts, test="ocsb")
+
+##partf
+#fi
+tsdisplay(coffee_ts, lag.max=50, main="Time Series of Coffee Futures")
+tsdisplay(diff(coffee_ts), lag.max=50, main="Time Series of Coffee Futures")
+auto.arima(coffee_ts, trace=TRUE)
+
+#fii
+arima_coffee_010 <- Arima(coffee_ts, order=c(0,1,0))
+arima_coffee_011 <- Arima(coffee_ts, order=c(0,1,1))
+summary(arima_coffee_010)
+summary(arima_coffee_011)
+
+#fiv
+checkresiduals(arima_coffee_010)
+checkresiduals(arima_coffee_011)
+
+#fv
+library(lmtest)
+#coeftest(arima_coffee_010) is not included due to no coefficient to test
+coeftest(arima_coffee_011)
+
+#fvi
+summary(arima_coffee_010)
+summary(arima_coffee_011)
+
+##partg
+forecast_30_arima_010 <- forecast(arima_coffee_010, h=30)
+plot(forecast_30_arima_010, main="30-Day Forecast of Coffee Futures - ARIMA(0,1,0)", ylab="Daily Price (US Cents/lb)", xlab="Time", lwd=2)
+lines(forecast_30_arima_010$fitted, col="red", lwd=2)
+legend("bottomleft", legend=c("Historical Data", "Fitted (Learned Past)", "30-Day Forecast"), col=c("black", "red", "blue"), lty=1, lwd=2, cex=0.7)
+```
