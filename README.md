@@ -64,7 +64,7 @@ Split the dataset into training (80%) and testing (20%) subsets. Compare observe
 
 Investigate autocorrelation and stationarity using time series diagnostics and statistical tests. Develop and assess two candidate ARIMA/SARIMA models based on their statistical properties and diagnostic results.
 
-![ACF and PACF Plots](images/acf-pacf.png)
+![ACF and PACF Plots](images/acf-pacf(diff).png)
 
 ### 5. Future Price Forecasting
 
