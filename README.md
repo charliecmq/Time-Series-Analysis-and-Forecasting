@@ -40,7 +40,7 @@ Visualize historical coffee prices and examine trend, seasonality, and other tim
 
 ![Historical Coffee Futures Prices](images/price-history.png)
 
-![Decomposition of Additive Time Series](images/decom-a-ts.png)
+![Decomposition of Additive Time Series](images/Decomposition%20of%20Additive%20Time%20Series.png)
 
 ### 2. Forecasting Model Development
 
