@@ -1,12 +1,12 @@
 # ☕ Coffee Futures Price Forecasting with R
 
-## 📌 Project Overview
+## 📌 Overview
 
 This project explores daily coffee futures prices using time series analysis and forecasting techniques in R. Using historical data from Yahoo Finance (`KC=F`) for the period from 1 January to 31 December 2025, the analysis investigates price patterns, develops forecasting models, and evaluates their predictive performance.
 
 The project aims to understand historical price movements and identify suitable forecasting approaches for estimating future coffee prices.
 
-## 🎯 Project Objectives
+## 🎯 Objectives
 
 - Analyze historical coffee futures prices and identify underlying time series components.
 - Develop and compare three forecasting models.
@@ -14,7 +14,7 @@ The project aims to understand historical price movements and identify suitable 
 - Examine autocorrelation and stationarity to develop ARIMA/SARIMA models.
 - Generate a 30-day forecast using the selected ARIMA/SARIMA model.
 
-## 📊 Dataset
+## 📊 Data Source
 
 - **Source:** Yahoo Finance
 - **Ticker:** `KC=F` (Coffee Futures)
@@ -22,6 +22,8 @@ The project aims to understand historical price movements and identify suitable 
 - **Period:** 1 January – 31 December 2025
 - **Frequency:** Daily
 - **Observations:** 254 records after removing missing values
+
+The raw dataset is retrieved directly from Yahoo Finance and is not redistributed in this repository.
 
 ## 🛠️ Tools & Technologies
 
@@ -33,23 +35,42 @@ The project aims to understand historical price movements and identify suitable 
 ## 📈 Methodology
 
 ### 1. Exploratory Time Series Analysis
+
 Visualize historical coffee prices and examine trend, seasonality, and other time series characteristics.
 
+![Historical Coffee Futures Prices](images/price-history.png)
+
+![Decomposition of Additive Time Series](images/Decomposition%20of%20Additive%20Time%20Series.png)
+
 ### 2. Forecasting Model Development
+
 Develop and compare three forecasting methods:
 
-- Additive Holt-Winters Model
-- Additive Decomposition Model
-- Regression Model with Dummy Variables
+- **Additive Holt-Winters Model**
+- **Additive Decomposition Model**
+- **Regression Model with Dummy Variables**
+
+<p align="center">
+  <img src="images/HoltWinters.png" alt="Holt-Winters Model" width="32%" />
+  <img src="images/Decomposition%20Model.png" alt="Decomposition Model" width="32%" />
+  <img src="images/Regression%20Model.png" alt="Regression Model" width="32%" />
+</p>
 
 ### 3. Model Evaluation
-Split the dataset into training (80%) and testing (20%) subsets. Compare observed and forecast values using forecast error measures such as MAE and RMSE.
+
+Split the dataset into training (80%) and testing (20%) subsets. Compare observed and forecast values using forecast error measures such as MAE, RMSE, and MASE.
 
 ### 4. ARIMA/SARIMA Analysis
+
 Investigate autocorrelation and stationarity using time series diagnostics and statistical tests. Develop and assess two candidate ARIMA/SARIMA models based on their statistical properties and diagnostic results.
 
+![ACF and PACF Plots](images/acf-pacf.png)
+
 ### 5. Future Price Forecasting
+
 Select an appropriate ARIMA/SARIMA model and generate a 30-day forecast of coffee futures prices.
+
+![30-Day Coffee Futures Forecast](images/forecast-30day.png)
 
 ## 🔍 Key Findings
 
@@ -77,6 +98,15 @@ This project demonstrates the application of statistical modelling and time seri
 ## ⚠️ Limitations
 
 The analysis covers one year of daily observations, which may limit the ability to identify longer-term market patterns or reliably estimate recurring annual seasonality. Forecasts are subject to uncertainty and should not be interpreted as investment advice.
+
+## 🗄️ Repository Contents
+
+- `scripts/TSF_Rmarkdown.Rmd` — R Markdown file containing the full time series analysis and forecasting code.
+- `scripts/TSF_Rproj.Rproj` — RStudio project file.
+- `scripts/TSF_Appendix.pdf` — appendix with supporting output and documentation.
+- `images/` — exported charts used in this README (price history, decomposition, models, ACF/PACF, and forecast).
+- `README.md` — project documentation.
+- `LICENSE` — license terms for this repository.
 
 ## 👤 Author
 
